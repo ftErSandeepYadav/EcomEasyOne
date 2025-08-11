@@ -16,4 +16,8 @@ public class ProdcutService {
         return productRepository.findAll();
     }
 
+    public List<Product> getProductsByCategoryId(Long categoryId) {
+        return productRepository.findByCategoryId(categoryId) ;
+    }
+
 }

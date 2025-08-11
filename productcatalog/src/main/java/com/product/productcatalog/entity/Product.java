@@ -1,7 +1,10 @@
 package com.product.productcatalog.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 
 @Entity
 @Data
@@ -17,7 +20,7 @@ public class Product {
     private Double price;
 
     @ManyToOne
-    @JoinColumn(name = "category_id")
-    private Catagory catagory ;
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category category ;
 
 }
