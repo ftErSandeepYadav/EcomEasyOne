@@ -4,12 +4,14 @@ jobs:
   build-java:
     docker:
       - image: cimg/openjdk:17.0
-    # Add this working_directory line
     working_directory: ~/project/productcatalog
     steps:
       - checkout:
-          # Checkout to the parent directory
           path: ~/project
+      # Add this line to make the script executable
+      - run:
+          name: "Make mvnw executable"
+          command: chmod +x ./mvnw
       - run:
           name: "Build Java application"
           command: ./mvnw package
@@ -17,11 +19,9 @@ jobs:
   build-react:
     docker:
       - image: cimg/node:16.10
-    # Add this working_directory line
     working_directory: ~/project/ecom-catalog-react
     steps:
       - checkout:
-          # Checkout to the parent directory
           path: ~/project
       - run:
           name: "Install dependencies"
