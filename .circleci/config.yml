@@ -1,40 +1,6 @@
 version: 2.1
 
 jobs:
-  build-java:
-    docker:
-      # Primary container for the Java application
-      - image: cimg/openjdk:17.0
-      # Add a secondary container for the MySQL database
-      - image: circleci/mysql:5.7
-        environment:
-          MYSQL_DATABASE: productcatalog
-          MYSQL_USER: root
-          MYSQL_PASSWORD: root
-          MYSQL_ROOT_PASSWORD: root
-    working_directory: ~/project/productcatalog
-    steps:
-      - checkout:
-          path: ~/project
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "pom.xml" }}
-            - v1-dependencies-
-      - run:
-          name: "Wait for DB"
-          command: dockerize -wait tcp://127.0.0.1:3306 -timeout 1m
-      - run:
-          name: "Make mvnw executable"
-          command: chmod +x ./mvnw
-      - run:
-          name: "Build and Test Java application"
-          # Use 'install' to run tests against the database
-          command: ./mvnw install
-      - save_cache:
-          paths:
-            - ~/.m2
-          key: v1-dependencies-{{ checksum "pom.xml" }}
-
   build-react:
     docker:
       - image: cimg/node:20.10.0
@@ -56,9 +22,10 @@ jobs:
       - run:
           name: "Build React app"
           command: npm run build
+      - store_artifacts:
+          path: dist
 
 workflows:
   build-apps:
     jobs:
-      - build-java
       - build-react
