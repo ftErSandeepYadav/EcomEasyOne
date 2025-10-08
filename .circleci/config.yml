@@ -4,8 +4,12 @@ jobs:
   build-java:
     docker:
       - image: cimg/openjdk:17.0
+    # Add this working_directory line
+    working_directory: ~/project/productcatalog
     steps:
-      - checkout
+      - checkout:
+          # Checkout to the parent directory
+          path: ~/project
       - run:
           name: "Build Java application"
           command: ./mvnw package
@@ -13,14 +17,19 @@ jobs:
   build-react:
     docker:
       - image: cimg/node:16.10
+    # Add this working_directory line
+    working_directory: ~/project/ecom-catalog-react
     steps:
-      - checkout
+      - checkout:
+          # Checkout to the parent directory
+          path: ~/project
       - run:
-          name: "Install dependencies and build React app"
-          command: |
-            cd ecom-catalog-react
-            npm install
-            npm run build
+          name: "Install dependencies"
+          command: npm install
+      - run:
+          name: "Build React app"
+          command: npm run build
+
 workflows:
   build-apps:
     jobs:
