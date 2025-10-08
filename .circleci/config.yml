@@ -2,36 +2,29 @@ version: 2.1
 
 jobs:
   build-react:
-    # Use the machine executor for a Linux VM
-    machine:
-      image: ubuntu-2204:current
-    # Specify the resource class
+    # Revert to the Docker executor which is available on the free plan
+    docker:
+      - image: cimg/node:20.10.0
+    # Specify the resource class for the Docker container
     resource_class: small
     working_directory: ~/project/ecom-catalog-react
     steps:
       - checkout:
           path: ~/project
-      # The rest of the steps are the same
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "package-lock.json" }}
             - v1-dependencies-
       - run:
           name: "Install dependencies"
-          command: |
-            # nvm is pre-installed on machine images
-            nvm install 20
-            nvm use 20
-            npm install
+          command: npm install
       - save_cache:
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "package-lock.json" }}
       - run:
           name: "Build React app"
-          command: |
-            nvm use 20
-            npm run build
+          command: npm run build
       - store_artifacts:
           path: dist
 
